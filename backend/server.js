@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const userRouter = require("./routes/user.router")
+const userRouter = require("./routes/userRouter")
+const chatRouter = require("./routes/chatRouter")
 const cors = require('cors')
 dotenv.config();
 require('./mongoDbConfig/dbConfig')
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json()); // to accept json dat
 app.use(cors())
 app.use("/user",userRouter)
+app.use("/chat",chatRouter)
 
 const PORT = process.env.PORT;
 

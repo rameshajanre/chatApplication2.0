@@ -10,10 +10,13 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <Routes>
+    <div className='App'>
+     <Routes>
       <Route path="/" Component={Homepage} exact />
       <Route path="/chat" Component={ChatPage}/>
     </Routes>
+    </div>
+   
   )
 }
 

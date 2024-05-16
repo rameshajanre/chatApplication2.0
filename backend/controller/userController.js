@@ -74,5 +74,35 @@ const userLogin  = async(req,res)=>{
    }
 }
 
+// User Search API
 
-module.exports = {userRegister,userLogin}
+const userSearch  = async(req,res)=>{
+  try {
+   const search = req.query.search ? {
+    $or:[
+      {name:{$regex:req.query.search, $options: "i"}},
+      {email:{$regex:req.query.search, $options: "i"}}
+    ]
+   }:{}
+
+    
+ if (search !=null) {
+  const user = await User.find(search).find({_id:{$ne:req.user._id}})  
+  return res.status(200).json({
+   message:"Success",
+   data:user 
+  })
+ } else {
+   res.status(401);
+   throw new Error("Invalid Email or Password");
+ }
+  } catch (error) {
+   return res.status(500).json({
+       status:"Failed",
+       message:error.message
+   })
+  }
+}
+
+
+module.exports = {userRegister,userLogin,userSearch}
