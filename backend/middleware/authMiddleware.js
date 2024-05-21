@@ -21,7 +21,7 @@ const protect = asyncHandler(async (req, res, next) => {
     } catch (error) {
      return res.status(401).json({
         status:"failed",
-        success:error.message
+        error:error.message
       });
     }
   }
@@ -29,7 +29,7 @@ const protect = asyncHandler(async (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       status:"failed",
-      success:error.message
+      message:"Provide the token.."
     });
   }
 });

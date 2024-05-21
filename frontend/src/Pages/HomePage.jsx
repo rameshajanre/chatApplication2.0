@@ -1,6 +1,7 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Login from "../components/authentication/Login";
 import Signup from "../components/authentication/Signup";
+import { useNavigate } from "react-router-dom";
 import {
     Box,
     Center,
@@ -17,10 +18,22 @@ import {
 
 
 const HomePage = () => {
+
+  const [user,setUser] = useState()
+  const navigate = useNavigate()
+  
+  useEffect(()=>{
+     const userInfo =  JSON.parse(localStorage.getItem('userInfo'))
+     setUser(userInfo)
+    if (userInfo) {
+      navigate("/userChats")
+    }
+  },[navigate])
+
   return (
 <Container maxW="xl" centerContent>
       <Box
-        d="flex"
+        display="flex"
         justifyContent="center"
         p={3}
         bg="white"

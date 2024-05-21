@@ -1,33 +1,26 @@
+import { useState } from "react";
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
-import { useState } from "react";
-import axios from "axios";
 import { useToast } from "@chakra-ui/react";
-// import { useHistory } from "react-router-dom";
-// import { ChatState } from "../../Context/ChatProvider";
-
-
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-//   const history = useHistory();
-//   const { setUser } = ChatState();
-const toast = useToast();
-
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
       toast({
-        title: "Please Fill all the Feilds",
+        title: "Please Fill all the Fields",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -45,7 +38,7 @@ const toast = useToast();
       };
 
       const { data } = await axios.post(
-       "http://127.0.0.1:5000/user/user-login",
+        "http://127.0.0.1:5000/user/login",
         { email, password },
         config
       );
@@ -57,19 +50,20 @@ const toast = useToast();
         isClosable: true,
         position: "bottom",
       });
-      setUser(data);
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoading(false);
-    //   history.push("/chats");
+      console.log("login successfully");
+      console.log("login local storage===>",data)
+      localStorage.setItem('userInfo', JSON.stringify(data))
+      navigate("/userChats"); // Use navigate function to redirect
     } catch (error) {
       toast({
-        title: "Error Occured!",
+        title: "Error Occurred!",
         description: error.response.data.message,
         status: "error",
         duration: 5000,
         isClosable: true,
         position: "bottom",
       });
+    } finally {
       setLoading(false);
     }
   };
@@ -106,6 +100,7 @@ const toast = useToast();
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
+        isLoading={loading}
       >
         Login
       </Button>

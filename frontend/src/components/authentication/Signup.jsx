@@ -5,7 +5,8 @@ import { VStack } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useState } from "react";
-// import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
+
 
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -17,6 +18,9 @@ const Signup = () => {
   const [password, setPassword] = useState();
   const [pic, setPic] = useState();
   const [picLoading, setPicLoading] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
+
 
   const submitHandler = async () => {
     setPicLoading(true);
@@ -49,7 +53,7 @@ const Signup = () => {
         },
       };
       const { data } = await axios.post(
-        "http://127.0.0.1:5000/user/user-create",
+        "http://127.0.0.1:5000/user/create",
         {
           name,
           email,
@@ -68,7 +72,7 @@ const Signup = () => {
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
       setPicLoading(false);
-      history.push("/chats");
+      navigate('/userChats');
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -99,7 +103,7 @@ const Signup = () => {
       const data = new FormData();
       data.append("file", pics);
       data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "piyushproj");
+      data.append("cloud_name", "Ramesh Ajnare");
       fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
         method: "post",
         body: data,
