@@ -8,28 +8,24 @@ import GroupChatModal from "./miscellaneous/GroupChatModule";
 import { useChatState } from "../Context/ChatProvider";
 
 const MyChats = ({ fetchAgain }) => {
-  const [loggedUser, setLoggedUser] = useState();
-
+  const [loggedUser, setLoggedUser] = useState(null);
   const { selectedChat, setSelectedChat, user, chats, setChats } = useChatState();
-console.log("MyChat==>",user);
-console.log("MyChat page chat=>",chats);
   const toast = useToast();
 
+
   const fetchChats = async () => {
-    // console.log(user._id);
     try {
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       };
-
       const { data } = await axios.get("http://localhost:5000/chat/fatch-chats", config);
       setChats(data.data);
     } catch (error) {
       toast({
         title: "Error Occurred!",
-        description: "Failed to Load the chats",
+        description: "Failed to load the chats",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -41,7 +37,6 @@ console.log("MyChat page chat=>",chats);
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-    // eslint-disable-next-line
   }, [fetchAgain]);
 
   return (
@@ -90,6 +85,7 @@ console.log("MyChat page chat=>",chats);
           <Stack overflowY="scroll">
             {chats.map((chat) => (
               <Box
+                key={chat._id}
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
                 bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
@@ -97,14 +93,13 @@ console.log("MyChat page chat=>",chats);
                 px={3}
                 py={2}
                 borderRadius="lg"
-                key={chat._id}
               >
                 <Text>
-                  {!chat.isGroupChat
-                    ? getSender(loggedUser, chat.users)
-                    : chat.chatName}
+                  {!chat?.isGroupChat
+                    ? getSender(loggedUser, chat?.users)
+                    : chat?.chatName}
                 </Text>
-                {chat.latestMessage && (
+                {chat?.latestMessage && (
                   <Text fontSize="xs">
                     <b>{chat.latestMessage.sender.name} : </b>
                     {chat.latestMessage.content.length > 50

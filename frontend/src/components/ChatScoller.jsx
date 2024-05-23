@@ -28,7 +28,7 @@ const ScrollableChat = ({ messages }) => {
                   name={m.sender.name}
                   src={m.sender.pic}
                 />
-              </Tooltip>
+              </Tooltip>  
             )}
             <span
               style={{

@@ -104,7 +104,7 @@ const Signup = () => {
       data.append("file", pics);
       data.append("upload_preset", "chat-app");
       data.append("cloud_name", "Ramesh Ajnare");
-      fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
+      fetch("https://localhost:5000/image/upload", {
         method: "post",
         body: data,
       })

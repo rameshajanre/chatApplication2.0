@@ -11,7 +11,7 @@ require("./mongoDbConfig/dbConfig");
 const app = express();
 app.use(express.json()); // to accept JSON data
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin) return callback(null, true);
@@ -38,9 +38,9 @@ const server = app.listen(
 
 // Configure socket.io
 const io = require("socket.io")(server, {
-  pingTimeout: 60000,
+  pingTimeout: 80000,
   cors: {
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
     credentials: true,
   },
 });
@@ -63,13 +63,25 @@ io.on("connection", (socket) => {
 
   socket.on("new message", (newMessageRecieved) => {
     var chat = newMessageRecieved.chat;
-
+    console.log("Chat=",chat.users);
     if (!chat.users) return console.log("chat.users not defined");
 
     chat.users.forEach((user) => {
-      if (user._id == newMessageRecieved.sender._id) return;
+      console.log("user inside of for loop=",newMessageRecieved.sender._id)
+      if (user == newMessageRecieved.sender._id) return;
+      console.log(`Emitting message to user ID: ${user}`);
+      socket.in(user).emit("message recieved", newMessageRecieved);
+      console.log("socket emit to user..")
+    });
+  
+  });
 
-      socket.in(user._id).emit("message recieved", newMessageRecieved);
+  socket.on("upload", (file, callback) => {
+    console.log("Image upload conection=",file); // <Buffer 25 50 44 ...>
+
+    // save the content to the disk, for example
+    writeFile("/tmp/upload", file, (err) => {
+      callback({ message: err ? "failure" : "success" });
     });
   });
 

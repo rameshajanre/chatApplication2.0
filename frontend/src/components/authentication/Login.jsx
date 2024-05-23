@@ -20,7 +20,7 @@ const Login = () => {
     setLoading(true);
     if (!email || !password) {
       toast({
-        title: "Please Fill all the Fields",
+        title: "Please fill all the fields",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -42,22 +42,22 @@ const Login = () => {
         { email, password },
         config
       );
-
+      console.log("login data=", data);
       toast({
-        title: "Login Successful",
+        title: "Login successful",
         status: "success",
         duration: 5000,
         isClosable: true,
         position: "bottom",
       });
-      console.log("login successfully");
-      console.log("login local storage===>",data)
-      localStorage.setItem('userInfo', JSON.stringify(data))
-      navigate("/userChats"); // Use navigate function to redirect
+
+      console.log("Login successful");
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      navigate("/userChats", { state: { userData: data } });
     } catch (error) {
       toast({
-        title: "Error Occurred!",
-        description: error.response.data.message,
+        title: "Error occurred!",
+        description: error.response?.data?.message || "Failed to login",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -75,7 +75,7 @@ const Login = () => {
         <Input
           value={email}
           type="email"
-          placeholder="Enter Your Email Address"
+          placeholder="Enter your email address"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>

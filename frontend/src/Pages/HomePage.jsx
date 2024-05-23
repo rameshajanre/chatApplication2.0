@@ -40,8 +40,8 @@ const HomePage = () => {
         w="100%"
         m="40px 0 15px 0"
         borderRadius="lg"
-        borderWidth="1px"
-      >
+        borderWidth="1px"      
+        >
         <Text fontSize="4xl" fontFamily="Work sans">
           Talk-A-Tive
         </Text>

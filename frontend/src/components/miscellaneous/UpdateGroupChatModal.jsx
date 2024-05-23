@@ -46,7 +46,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      const { data } = await axios.get(`http://localhost:5000/user/search?search=${search}`, config);
       console.log(data);
       setLoading(false);
       setSearchResult(data.data);
@@ -205,7 +205,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
 
   return (
     <>
-      <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+      <IconButton display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
 
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
@@ -220,7 +220,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
           </ModalHeader>
 
           <ModalCloseButton />
-          <ModalBody d="flex" flexDir="column" alignItems="center">
+          <ModalBody display="flex" flexDir="column" alignItems="center">
             <Box width="100%" display="flex" flexWrap="wrap" pb={3}>
               {selectedChat.users.map((u) => (
                 <UserBadgeItem
@@ -231,7 +231,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
                 />
               ))}
             </Box>
-            <FormControl d="flex">
+            <FormControl display="flex">
               <Input
                 placeholder="Chat Name"
                 mb={3}
