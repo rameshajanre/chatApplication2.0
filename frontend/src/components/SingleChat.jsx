@@ -1,4 +1,4 @@
-import { FormControl } from "@chakra-ui/form-control";
+import { FormControl,FormLabel } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
 import "./styles.css";
@@ -15,7 +15,7 @@ import animationData from "./animation/typing.json";
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { useChatState } from "../Context/ChatProvider";
-const ENDPOINT = "http://localhost:5000"; 
+const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -36,7 +36,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     },
   };
 
-  const { selectedChat, setSelectedChat, user, notification, setNotification } = useChatState();
+  const { selectedChat, setSelectedChat, user, notification, setNotification } =
+    useChatState();
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -125,11 +126,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     socket.on("message recieved", (newMessageReceived) => {
-      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-        if (!notification.some(notif => notif._id === newMessageReceived._id)) {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        if (
+          !notification.some((notif) => notif._id === newMessageReceived._id)
+        ) {
           setNotification([newMessageReceived, ...notification]);
           setFetchAgain(!fetchAgain);
-      }
+        }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
@@ -161,6 +167,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, timerLength);
   };
 
+  const upload = (files) => {
+    console.log("File Data===>",files)
+    if (files) {
+      console.log("File Name=", files[0]);
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result;
+        socket.emit("upload", arrayBuffer, (status) => {
+          console.log("file upload status", status);
+        });
+      };
+      reader.readAsArrayBuffer(files[0]);
+    }
+  };
+
   return (
     <>
       {selectedChat ? (
@@ -184,7 +205,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               (!selectedChat.isGroupChat ? (
                 <>
                   {getSender(user, selectedChat.users)}
-                  <ProfileModal user={getSenderFull(user, selectedChat.users)} />
+                  <ProfileModal
+                    user={getSenderFull(user, selectedChat.users)}
+                  />
                 </>
               ) : (
                 <>
@@ -221,7 +244,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 <ScrollableChat messages={messages} />
               </div>
             )}
-            <FormControl onKeyDown={sendMessage} id="first-name" isRequired mt={3}>
+            <FormControl
+              onKeyDown={sendMessage}
+              id="first-name"
+              isRequired
+              mt={3}
+            >
               {istyping ? (
                 <div>
                   <Lottie
@@ -239,10 +267,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 onChange={typingHandler}
               />
             </FormControl>
+            <FormControl id="pic">
+              <FormLabel>Upload your Picture</FormLabel>
+              <Input
+                type="file"
+                p={1.5}
+                accept="image/*"
+                onChange={(e) => upload(e.target.files)}
+              />
+            </FormControl>
           </Box>
         </>
       ) : (
-        <Box display="flex" alignItems="center" justifyContent="center" h="100%">
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          h="100%"
+        >
           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
             Click on a user to start chatting
           </Text>

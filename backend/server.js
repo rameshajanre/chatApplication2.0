@@ -4,6 +4,7 @@ const userRouter = require("./routes/userRouter");
 const chatRouter = require("./routes/chatRouter");
 const messageRouter = require("./routes/messageRouter");
 const cors = require("cors");
+const {writeFile} = require("fs")
 
 dotenv.config();
 require("./mongoDbConfig/dbConfig");
@@ -77,12 +78,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("upload", (file, callback) => {
-    console.log("Image upload conection=",file); // <Buffer 25 50 44 ...>
+    console.log("Image upload connection=", file);
 
-    // save the content to the disk, for example
-    writeFile("/tmp/upload", file, (err) => {
-      callback({ message: err ? "failure" : "success" });
-    });
+    const buffer = Buffer.from(new Uint8Array(file));
+
+    writeFile("uploadImages", buffer, (err) => {
+      if (err) {
+        console.error("File write error:", err);
+        callback({ message: "failure" });
+      } else {
+        console.log("File successfully written");
+        callback({ message: "success" });
+      }
+    })
   });
 
   socket.off("setup", () => {
